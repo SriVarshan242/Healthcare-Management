@@ -35,6 +35,6 @@ public Appointment getAppointmentById(@PathVariable Long id) {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
-        return ResponseEntity.ok("Appointment deleted successfully");
+        return ResponseEntity.ok("Appointment deleted is successful");
     }
 }

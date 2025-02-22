@@ -2,6 +2,9 @@ package com.healthcare.demo.Controller;
 
 import com.healthcare.demo.Model.*;
 import com.healthcare.demo.Service.*;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +23,12 @@ public class PatientController {
 
     // GET /patients?page=0&size=10&sortBy=name
     @GetMapping
-    public ResponseEntity<Page<Patient>> getAllPatients(
+    public ResponseEntity<List<Patient>> getAllPatients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
         Page<Patient> patientPage = patientService.getAllPatients(page, size, sortBy);
-        return ResponseEntity.ok(patientPage);
+        return ResponseEntity.ok(patientPage.getContent());
     }
 
     // GET /patients/{id}

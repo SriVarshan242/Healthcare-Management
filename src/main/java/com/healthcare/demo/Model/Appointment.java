@@ -18,11 +18,13 @@ public class Appointment {
     // Many-to-One relationship to Doctor
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
+    @JsonIgnore
     private Doctor doctor;
 
     // Many-to-One relationship to Patient
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
+    @JsonIgnore
     private Patient patient;
 
     public Appointment() {

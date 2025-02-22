@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,5 +39,9 @@ public class DoctorService {
     // Delete a doctor by ID
     public void deleteDoctor(Long id) {
         doctorRepository.deleteById(id);
+    }
+
+    public List<Doctor> NameStartingWithV() {
+        return doctorRepository.fetchByNameStartingWith("V"); // Now dynamic
     }
 }

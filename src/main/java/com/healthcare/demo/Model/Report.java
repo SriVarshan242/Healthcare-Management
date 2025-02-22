@@ -1,5 +1,7 @@
 package com.healthcare.demo.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +19,7 @@ public class Report {
     // Many-to-One relationship to Patient
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
+    @JsonIgnore
     private Patient patient;
 
     public Report() {

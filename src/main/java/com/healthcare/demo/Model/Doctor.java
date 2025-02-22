@@ -1,10 +1,14 @@
 package com.healthcare.demo.Model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
+@Table(name = "doctors")
 public class Doctor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,19 +17,24 @@ public class Doctor {
     private String specialization;
     private String contactInfo;
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    private List<Appointment> appointments;
+    // One-to-Many mapping with appointments (if needed)
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Appointment> appointments = new ArrayList<>();
 
-    // Constructors
-    public Doctor() {}
+    public Doctor() {
+    }
 
-    public Doctor(String name, String specialization, String contactInfo) {
+    public Doctor(Long id, String name, String specialization, String contactInfo, List<Appointment> appointments) {
+        this.id = id;
         this.name = name;
         this.specialization = specialization;
         this.contactInfo = contactInfo;
+        this.appointments = appointments;
     }
 
-    // Getters & Setters
+
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -64,5 +73,15 @@ public class Doctor {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", specialization='" + specialization + '\'' +
+               ", contactInfo='" + contactInfo + '\'' +
+               '}';
     }
 }

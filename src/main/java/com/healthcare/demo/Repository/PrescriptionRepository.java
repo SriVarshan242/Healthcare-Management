@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
+    // Additional custom query methods can be defined here if needed.
 }

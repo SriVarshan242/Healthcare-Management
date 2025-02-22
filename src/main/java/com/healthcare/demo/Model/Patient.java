@@ -1,35 +1,51 @@
 package com.healthcare.demo.Model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "patients")
 public class Patient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
+    private Integer age;
+    private String diagnosis;
     private String contactInfo;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<Appointment> appointments;
+    // One-to-Many mapping with appointments (if needed)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Appointment> appointments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<Prescription> prescriptions;
+    // One-to-Many mapping with prescriptions (if needed)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Prescription> prescriptions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<Report> reports;
+    // One-to-Many mapping with reports (if needed)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Report> reports = new ArrayList<>();
 
-    // Constructors
-    public Patient() {}
-
-    public Patient(String name, String contactInfo) {
-        this.name = name;
-        this.contactInfo = contactInfo;
+    public Patient() {
     }
 
-    // Getters & Setters
+    public Patient(Long id, String name, Integer age, String diagnosis, String contactInfo,
+                   List<Appointment> appointments, List<Prescription> prescriptions, List<Report> reports) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.diagnosis = diagnosis;
+        this.contactInfo = contactInfo;
+        this.appointments = appointments;
+        this.prescriptions = prescriptions;
+        this.reports = reports;
+    }
+
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -44,6 +60,22 @@ public class Patient {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getDiagnosis() {
+        return diagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
     }
 
     public String getContactInfo() {
@@ -76,5 +108,16 @@ public class Patient {
 
     public void setReports(List<Report> reports) {
         this.reports = reports;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", age=" + age +
+               ", diagnosis='" + diagnosis + '\'' +
+               ", contactInfo='" + contactInfo + '\'' +
+               '}';
     }
 }

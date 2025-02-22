@@ -2,38 +2,51 @@ package com.healthcare.demo.Controller;
 
 import com.healthcare.demo.Model.*;
 import com.healthcare.demo.Service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/doctors")
 public class DoctorController {
-    private final DoctorService doctorService;
 
+    private DoctorService doctorService;
+
+    @Autowired
     public DoctorController(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
 
-    @PostMapping
-    public ResponseEntity<Doctor> addDoctor(@RequestBody Doctor doctor) {
-        return ResponseEntity.ok(doctorService.saveDoctor(doctor));
-    }
-
+    // GET /doctors?page=0&size=10&sortBy=name
     @GetMapping
-    public ResponseEntity<List<Doctor>> getAllDoctors() {
-        return ResponseEntity.ok(doctorService.getAllDoctors());
+    public ResponseEntity<Page<Doctor>> getAllDoctors(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Page<Doctor> doctorPage = doctorService.getAllDoctors(page, size, sortBy);
+        return ResponseEntity.ok(doctorPage);
     }
 
-    public Doctor getDoctorById(@PathVariable Long id) {
-        return doctorService.getDoctorById(id).orElse(null);
+    // GET /doctors/{id}
+    @GetMapping("/{id}")
+    public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
+        return doctorService.getDoctorById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // POST /doctors (Create or update a doctor)
+    @PostMapping
+    public ResponseEntity<Doctor> createOrUpdateDoctor(@RequestBody Doctor doctor) {
+        Doctor savedDoctor = doctorService.saveDoctor(doctor);
+        return ResponseEntity.ok(savedDoctor);
+    }
 
+    // DELETE /doctors/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDoctor(@PathVariable Long id) {
         doctorService.deleteDoctor(id);
-        return ResponseEntity.ok("Doctor deleted successfully");
+        return ResponseEntity.ok("{ \"message\": \"Doctor deleted successfully\" }");
     }
 }

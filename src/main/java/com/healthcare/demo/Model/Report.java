@@ -3,28 +3,35 @@ package com.healthcare.demo.Model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "reports")
 public class Report {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String reportName;
-    private String reportDetails;
+    private String title;
+    private String description;
+    private String date;  // You may change this to a Date/LocalDate field if desired
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
+    // Many-to-One relationship to Patient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    // Constructors
-    public Report() {}
+    public Report() {
+    }
 
-    public Report(String reportName, String reportDetails, Patient patient) {
-        this.reportName = reportName;
-        this.reportDetails = reportDetails;
+    public Report(Long id, String title, String description, String date, Patient patient) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.date = date;
         this.patient = patient;
     }
 
-    // Getters & Setters
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -33,20 +40,28 @@ public class Report {
         this.id = id;
     }
 
-    public String getReportName() {
-        return reportName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setReportName(String reportName) {
-        this.reportName = reportName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getReportDetails() {
-        return reportDetails;
+    public String getDescription() {
+        return description;
     }
 
-    public void setReportDetails(String reportDetails) {
-        this.reportDetails = reportDetails;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public Patient getPatient() {
@@ -55,5 +70,15 @@ public class Report {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    @Override
+    public String toString() {
+        return "Report{" +
+               "id=" + id +
+               ", title='" + title + '\'' +
+               ", description='" + description + '\'' +
+               ", date='" + date + '\'' +
+               '}';
     }
 }

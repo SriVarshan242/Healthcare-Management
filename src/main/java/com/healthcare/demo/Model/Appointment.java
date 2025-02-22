@@ -3,32 +3,40 @@ package com.healthcare.demo.Model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
+@Table(name = "appointments")
 public class Appointment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDateTime appointmentDate;
 
-    @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
+    // Many-to-One relationship to Doctor
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
+    // Many-to-One relationship to Patient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    // Constructors
-    public Appointment() {}
+    public Appointment() {
+    }
 
-    public Appointment(LocalDateTime appointmentDate, Doctor doctor, Patient patient) {
+    public Appointment(Long id, LocalDateTime appointmentDate, Doctor doctor, Patient patient) {
+        this.id = id;
         this.appointmentDate = appointmentDate;
         this.doctor = doctor;
         this.patient = patient;
     }
 
-    // Getters & Setters
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -59,5 +67,13 @@ public class Appointment {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+               "id=" + id +
+               ", appointmentDate=" + appointmentDate +
+               '}';
     }
 }

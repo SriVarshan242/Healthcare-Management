@@ -9,8 +9,8 @@ import java.util.*;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    // Additional custom query methods can be defined here if needed.
-
+    // Additional custom query methods can be defined here if needed
     @Query("SELECT d FROM Doctor d WHERE d.name LIKE :prefix%") 
     List<Doctor> fetchByNameStartingWith(@Param("prefix") String prefix);
+
 }

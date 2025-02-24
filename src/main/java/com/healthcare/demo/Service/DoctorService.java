@@ -41,7 +41,7 @@ public class DoctorService {
         doctorRepository.deleteById(id);
     }
 
-    public List<Doctor> NameStartingWithV() {
-        return doctorRepository.fetchByNameStartingWith("V"); // Now dynamic
+    public List<Doctor> NameStartingWithV(String prefix) {
+        return doctorRepository.fetchByNameStartingWith(prefix); // Now dynamic
     }
 }

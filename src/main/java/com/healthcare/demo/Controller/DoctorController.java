@@ -4,6 +4,7 @@ import com.healthcare.demo.Model.*;
 import com.healthcare.demo.Service.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/doctors")
 public class DoctorController {
 
-    private DoctorService doctorService;
+    private final DoctorService doctorService;
 
     @Autowired
     public DoctorController(DoctorService doctorService) {
@@ -38,18 +39,32 @@ public class DoctorController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    
     @GetMapping("/nameWithV")
-    public List<Doctor> getByNameWithV() {
-        return doctorService.NameStartingWithV();
+    public List<Doctor> getByNameWithV(@RequestParam String prefix) {
+        return doctorService.NameStartingWithV(prefix);
     }
+    
     // POST /doctors (Create or update a doctor)
     @PostMapping
     public ResponseEntity<Doctor> createOrUpdateDoctor(@RequestBody Doctor doctor) {
         Doctor savedDoctor = doctorService.saveDoctor(doctor);
         return ResponseEntity.ok(savedDoctor);
     }
-
+    
+    // PUT /doctors/{id} (Update an existing doctor)
+    @PutMapping("/{id}")
+    public ResponseEntity<Doctor> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor) {
+        Optional<Doctor> existingDoctor = doctorService.getDoctorById(id);
+        if (existingDoctor.isPresent()) {
+            doctor.setId(id); // Ensure the doctor ID remains the same
+            Doctor updatedDoctor = doctorService.saveDoctor(doctor);
+            return ResponseEntity.ok(updatedDoctor);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     // DELETE /doctors/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDoctor(@PathVariable Long id) {

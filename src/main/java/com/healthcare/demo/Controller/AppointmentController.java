@@ -4,6 +4,7 @@ import com.healthcare.demo.Model.*;
 import com.healthcare.demo.Service.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/appointments")
 public class AppointmentController {
 
-    private AppointmentService appointmentService;
+    private final AppointmentService appointmentService;
 
     @Autowired
     public AppointmentController(AppointmentService appointmentService) {
@@ -44,6 +45,19 @@ public class AppointmentController {
     public ResponseEntity<Appointment> createOrUpdateAppointment(@RequestBody Appointment appointment) {
         Appointment savedAppointment = appointmentService.saveAppointment(appointment);
         return ResponseEntity.ok(savedAppointment);
+    }
+
+    // PUT /appointments/{id} - Update an appointment
+    @PutMapping("/{id}")
+    public ResponseEntity<Appointment> updateAppointment(@PathVariable Long id, @RequestBody Appointment appointment) {
+        Optional<Appointment> existingAppointment = appointmentService.getAppointmentById(id);
+        if (existingAppointment.isPresent()) {
+            appointment.setId(id); // Ensure the correct ID is used
+            Appointment updatedAppointment = appointmentService.saveAppointment(appointment);
+            return ResponseEntity.ok(updatedAppointment);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // DELETE /appointments/{id}

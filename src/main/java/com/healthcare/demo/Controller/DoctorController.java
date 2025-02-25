@@ -27,8 +27,9 @@ public class DoctorController {
     public ResponseEntity<List<Doctor>> getAllDoctors(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-        Page<Doctor> doctorPage = doctorService.getAllDoctors(page, size, sortBy);
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<Doctor> doctorPage = doctorService.getAllDoctors(page, size, sortBy,sortDir);
         return ResponseEntity.ok(doctorPage.getContent());
     }
 
@@ -43,6 +44,11 @@ public class DoctorController {
     @GetMapping("/nameWithV")
     public List<Doctor> getByNameWithV(@RequestParam String prefix) {
         return doctorService.NameStartingWithV(prefix);
+    }
+
+    @GetMapping("/specialization/{specialization}")
+    public List<Doctor> getDoctorsBySpecialization(@PathVariable String specialization) {
+        return doctorService.getDoctorsBySpecialization(specialization);
     }
     
     // POST /doctors (Create or update a doctor)

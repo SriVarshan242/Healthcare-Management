@@ -26,8 +26,9 @@ public class PatientController {
     public ResponseEntity<List<Patient>> getAllPatients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-        Page<Patient> patientPage = patientService.getAllPatients(page, size, sortBy);
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<Patient> patientPage = patientService.getAllPatients(page, size, sortBy,sortDir);
         return ResponseEntity.ok(patientPage.getContent());
     }
 
@@ -44,6 +45,18 @@ public class PatientController {
     public ResponseEntity<Patient> createOrUpdatePatient(@RequestBody Patient patient) {
         Patient savedPatient = patientService.savePatient(patient);
         return ResponseEntity.ok(savedPatient);
+    }
+
+    // PUT /patients/{id} (Update an existing patient)
+    @PutMapping("/{id}")
+    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
+        return patientService.getPatientById(id)
+                .map(existingPatient -> {
+                    patient.setId(id);
+                    Patient updatedPatient = patientService.savePatient(patient);
+                    return ResponseEntity.ok(updatedPatient);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // DELETE /patients/{id}

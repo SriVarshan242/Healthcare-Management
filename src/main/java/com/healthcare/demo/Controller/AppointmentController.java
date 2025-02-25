@@ -3,6 +3,7 @@ package com.healthcare.demo.Controller;
 import com.healthcare.demo.Model.*;
 import com.healthcare.demo.Service.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +28,9 @@ public class AppointmentController {
     public ResponseEntity<List<Appointment>> getAllAppointments(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "appointmentDate") String sortBy) {
-        Page<Appointment> appointmentPage = appointmentService.getAllAppointments(page, size, sortBy);
+            @RequestParam(defaultValue = "appointmentDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<Appointment> appointmentPage = appointmentService.getAllAppointments(page, size, sortBy,sortDir);
         return ResponseEntity.ok(appointmentPage.getContent());
     }
 
@@ -65,5 +67,13 @@ public class AppointmentController {
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
         return ResponseEntity.ok("{ \"message\": \"Appointment deleted successfully\" }");
+    }
+
+    @GetMapping("/between")
+    public ResponseEntity<List<Appointment>> getAppointmentsBetweenDates(
+            @RequestParam LocalDateTime startDate,
+            @RequestParam LocalDateTime endDate) {
+        List<Appointment> appointments = appointmentService.getAppointmentsBetweenDates(startDate, endDate);
+        return ResponseEntity.ok(appointments);
     }
 }

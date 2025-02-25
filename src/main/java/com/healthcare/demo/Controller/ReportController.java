@@ -1,7 +1,10 @@
 package com.healthcare.demo.Controller;
 
-import com.healthcare.demo.Model.*;
-import com.healthcare.demo.Service.*;
+import com.healthcare.demo.Model.Report;
+import com.healthcare.demo.Service.ReportService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +23,13 @@ public class ReportController {
 
     // GET /reports?page=0&size=10&sortBy=id
     @GetMapping
-    public ResponseEntity<Page<Report>> getAllReports(
+    public ResponseEntity<List<Report>> getAllReports(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-        Page<Report> reportPage = reportService.getAllReports(page, size, sortBy);
-        return ResponseEntity.ok(reportPage);
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir)  {
+        Page<Report> reportPage = reportService.getAllReports(page, size, sortBy,sortDir);
+        return ResponseEntity.ok(reportPage.getContent());
     }
 
     // GET /reports/{id}
@@ -41,6 +45,17 @@ public class ReportController {
     public ResponseEntity<Report> createOrUpdateReport(@RequestBody Report report) {
         Report savedReport = reportService.saveReport(report);
         return ResponseEntity.ok(savedReport);
+    }
+
+    // PUT /reports/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<Report> updateReport(@PathVariable Long id, @RequestBody Report report) {
+        if (!reportService.getReportById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        report.setId(id);
+        Report updatedReport = reportService.saveReport(report);
+        return ResponseEntity.ok(updatedReport);
     }
 
     // DELETE /reports/{id}

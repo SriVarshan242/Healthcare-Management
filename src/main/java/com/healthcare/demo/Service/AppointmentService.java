@@ -5,9 +5,13 @@ import com.healthcare.demo.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,12 +35,19 @@ public class AppointmentService {
     }
 
     // Retrieve all appointments with pagination and sorting
-    public Page<Appointment> getAllAppointments(int page, int size, String sortBy) {
-        return appointmentRepository.findAll(PageRequest.of(page, size, Sort.by(sortBy)));
+    public Page<Appointment> getAllAppointments(int page, int size, String sortBy,String sortDir) {
+        Sort sort = sortDir.equals("asc")? Sort.by(sortBy).ascending() :Sort.by(sortBy).descending();
+        Pageable pageable=PageRequest.of(page, size,sort);
+        return appointmentRepository.findAll(pageable);
+        // return appointmentRepository.findAll(PageRequest.of(page, size, Sort.by(sortBy)));
     }
 
     // Delete an appointment by ID
     public void deleteAppointment(Long id) {
         appointmentRepository.deleteById(id);
+    }
+
+    public List<Appointment> getAppointmentsBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        return appointmentRepository.findAppointmentsBetweenDates(startDate, endDate);
     }
 }

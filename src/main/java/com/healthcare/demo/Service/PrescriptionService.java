@@ -5,6 +5,7 @@ import com.healthcare.demo.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +32,10 @@ public class PrescriptionService {
     }
 
     // Retrieve all prescriptions with pagination and sorting (if needed)
-    public Page<Prescription> getAllPrescriptions(int page, int size, String sortBy) {
-        return prescriptionRepository.findAll(PageRequest.of(page, size, Sort.by(sortBy)));
+    public Page<Prescription> getAllPrescriptions(int page, int size, String sortBy,String sortDir) {
+        Sort sort = sortDir.equals("asc")? Sort.by(sortBy).ascending() :Sort.by(sortBy).descending();
+        Pageable pageable=PageRequest.of(page, size,sort);
+        return prescriptionRepository.findAll(pageable);
     }
 
     // Delete a prescription by ID

@@ -5,6 +5,7 @@ import com.healthcare.demo.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,10 @@ public class DoctorService {
     }
 
     // Get all doctors with pagination and sorting (Week-6 requirement)
-    public Page<Doctor> getAllDoctors(int page, int size, String sortBy) {
-        return doctorRepository.findAll(PageRequest.of(page, size, Sort.by(sortBy)));
+    public Page<Doctor> getAllDoctors(int page, int size, String sortBy,String sortDir) {
+        Sort sort = sortDir.equals("asc")? Sort.by(sortBy).ascending() :Sort.by(sortBy).descending();
+        Pageable pageable=PageRequest.of(page, size,sort);
+        return doctorRepository.findAll(pageable);
     }
 
     // Delete a doctor by ID
@@ -43,5 +46,9 @@ public class DoctorService {
 
     public List<Doctor> NameStartingWithV(String prefix) {
         return doctorRepository.fetchByNameStartingWith(prefix); // Now dynamic
+    }
+
+    public List<Doctor> getDoctorsBySpecialization(String specialization) {
+        return doctorRepository.findBySpecialization(specialization);
     }
 }
